@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Table Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+</head>
+<body>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <div class="container">
+    <h2>Все транзакции по вашему счету</h2>
+        <div class="row">
+            <div class="col s6">
+                <table class="bordered highlight" >
+                    <thead>
+                        <tr>
+                            <th>Сумма начисления</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for charge in charges %}
+                            {% if charge.value > 0 %}
+                        <tr>
+                            <td>{{ charge.value }}</td>
+                            <td>{{ charge.date }}</td>
+                        </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td class="blue">{{ positive }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col s6">
+                    <table class="bordered highlight" >
+                        <thead>
+                            <tr>
+                                <th>Сумма списания</th>
+                                <th>Дата</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for charge in charges %}
+                                {% if charge.value < 0 %}
+                            <tr>
+                                <td>{{ charge.value }}</td>
+                                <td>{{ charge.date }}</td>
+                            </tr>
+                                {% endif %}
+                            {% endfor %}
+                            <tr>
+                                <td class="blue">{{ negative }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    <p>Вернуться на <a href="{% url 'finance:front_page' %}">главную</a>.</p>
+    </div>
+</body>
+</html>
