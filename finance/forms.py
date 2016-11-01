@@ -12,5 +12,5 @@ class ChargeForm(forms.Form):
         cleaned_data = super().clean()
         if cleaned_data.get('value')<0:
             if cleaned_data.get('_date') > date.today():
-                self.add_error('_date', 'Невозможно списывать со счета с даты превышающую сегодняшнюю')
+                self.add_error('_date', 'Р”Р°С‚Р° СЃРїРёСЃР°РЅРёСЏ РЅРµ РјРѕР¶РµС‚ РїСЂРµРІС‹С€Р°С‚СЊ СЃРµРіРѕРґРЅСЏС€РЅСЋСЋ')
         return self

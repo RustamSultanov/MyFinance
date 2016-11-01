@@ -1,10 +1,10 @@
 from django.db import models
-from datetime import date
+
 # Create your models here.
 
 
 class Account(models.Model):
-    _total = models.DecimalField(max_digits=15, decimal_places=2)
+    _total = models.DecimalField(max_digits=30, decimal_places=2)
 
     @classmethod
     def create(cls, total):
@@ -12,13 +12,13 @@ class Account(models.Model):
         account.save()
         return account
 
-    def add_charge(self, value):
-        if self._total + value < 0:
+    def add_charge(self, sum):
+        if self._total + sum < 0:
             return
 
-        charge = Charge.create(self, value)
+        charge = Charge.create(self, sum)
         charge.save()
-        self._total += value
+        self._total += sum
 
     def __iter__(self):
         return self.charges.all().__iter__()
@@ -29,14 +29,8 @@ class Account(models.Model):
 
 
 class Charge(models.Model):
-    _value = models.DecimalField(max_digits=8, decimal_places=2)
+    _value = models.DecimalField(max_digits=10, decimal_places=2)
     _date = models.DateField()
-
-    @classmethod
-    def create(cls, Value=0, Date = date.today()):
-        charge = cls(_value=round(Value, 2), _date = Date)
-        charge.save()
-        return charge
 
     @property
     def value(self):
@@ -45,3 +39,6 @@ class Charge(models.Model):
     @property
     def date(self):
         return self._date
+
+
+

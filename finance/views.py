@@ -3,8 +3,21 @@ from datetime import date
 from decimal import Decimal
 from .models import Account, Charge
 from random import randint
-from .models import Account
-# Create your views here.
+
+
+def start_page(request):
+    return render(request, 'finance/start_page.html',  {})
+
+
+def table_page(request):
+    transactions = []
+    for i in range(15):
+        _date, value = random_transactions().__next__()
+        charge = Charge.objects.create(_value = value, _date=_date)
+        charge.save()
+        transactions.append(charge)
+
+    return render(request, 'finance/table_page.html', {"charges":transactions})
 
 
 def random_transactions( ):
@@ -21,21 +34,3 @@ def random_transactions( ):
         yield random_date, random_value
 
 
-def main(request):
-    return render(request, 'finance/charges_page.html')
-
-
-def charges(request):
-    charges = []
-    positive = 0
-    negative = 0
-    for i in range(25):
-        Date, Value = random_transactions().__next__()
-        if Value > 0 : positive+= Value
-        else : negative+= Value
-        charge = Charge.create(Value, Date)
-        charges.append(charge)
-
-    return render(request,
-                  'finance/charges_view.html',
-                  {"charges": charges, "positive" : positive, "negative" : negative})
