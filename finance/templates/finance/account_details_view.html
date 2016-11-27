@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Транзакции</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+</head>
+<body>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <div class="container">
+        <h2>Все транзакции по вашему счету</h2>
+        <table class="bordered highlight" >
+            <thead>
+                <tr>
+                    <th>Сумма транзакции</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for charge in account.charges.all %}
+                <tr>
+                    <td>{{ charge.value }}</td>
+                    <td>{{ charge.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col s4">
+                <form method="POST" class="post-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="save btn btn-default">Добавить</button>
+                </form>
+            </div>
+        </div>
+        <div id="statistics">
+            {% for statistic in statistics %}
+                {% if statistic.income or statistic.outcome %}
+                <div id="statistic" data-month="{{ statistic.month }}"
+                     data-income="{{ statistic.income }}" data-outcome="{{ statistic.outcome }}"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div id="statistics_bar" style="height: 250px;"></div>
+        <p>Вернуться на <a href="{% url 'finance:accounts_view' %}">главную</a>.</p>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var data = [];
+            var statistics = $("#statistics").children();
+            for ( i = 0; i < statistics.length; i++ ){
+                var month = $(statistics[i]).data("month");
+                var income = $(statistics[i]).data("income");
+                if (income) {
+                    income = parseFloat(income.replace(/[,]+/g, '.'));
+                } else {
+                    income = 0;
+                }
+                var outcome = $(statistics[i]).data("outcome");
+                if (outcome) {
+                    outcome = -parseFloat(outcome.replace(/[,]+/g, '.'));
+                } else {
+                    outcome = 0;
+                }
+                //outcome = parseFloat(outcome.substring(1, outcome.length - 1).replace(/[,]+/g, '.'));
+                var statistic = { month: month, income: income, outcome: outcome };
+                data.push(statistic);
+            }
+            new Morris.Bar({
+                // ID of the element in which to draw the chart.
+                element: 'statistics_bar',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: data,
+                // The name of the data record attribute that contains x-values.
+                xkey: 'month',
+                ykeys: ['income', 'outcome'],
+                // Labels for the ykeys -- will be displayed when you hover over the
+                // chart.
+                labels: ['Доход', 'Расход']
+            });
+        });
+
+    </script>
+</body>
+</html>
