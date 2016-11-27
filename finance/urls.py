@@ -2,6 +2,6 @@ from finance.views import *
 from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^$', start_page, name="start_page"),
-    url(r'charges/', table_page, name="table_page"),
+    url(r'^$', accounts, name="accounts_view"),
+    url(r'^account/(?P<pk>[0-9]+)/$', account_details, name='account_details'),
 ]

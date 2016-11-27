@@ -3,21 +3,8 @@ from datetime import date
 from decimal import Decimal
 from .models import Account, Charge
 from random import randint
-
-
-def start_page(request):
-    return render(request, 'finance/start_page.html',  {})
-
-
-def table_page(request):
-    transactions = []
-    for i in range(15):
-        _date, value = random_transactions().__next__()
-        charge = Charge.objects.create(_value = value, _date=_date)
-        charge.save()
-        transactions.append(charge)
-
-    return render(request, 'finance/table_page.html', {"charges":transactions})
+from .forms import ChargeForm, AccountForm
+# Create your views here.
 
 
 def random_transactions( ):
@@ -34,3 +21,49 @@ def random_transactions( ):
         yield random_date, random_value
 
 
+
+
+def accounts(request):
+    if request.method == "POST":
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            account = form.save(commit=False)
+            account.save()
+    else:
+        form = AccountForm()
+
+    return render(request,
+                  'finance/accounts_view.html',
+                  {"accounts": Account.objects.all(), 'form': form})
+
+
+def account_details(request, pk):
+    account = Account.objects.get(pk=pk)
+    if request.method == "POST":
+        form = ChargeForm(request.POST)
+        if form.is_valid():
+            charge = form.save(commit=False)
+            account.add_charge(charge)
+    else:
+        form = ChargeForm()
+
+    charges = account.charges
+    months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль',
+              'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    curr_year = date.today().year
+    statistics = []
+    for month in range(1, 13):
+        month_charges = charges.filter(_date__month=month, _date__year=curr_year).all()
+        income = 0
+        outcome = 0
+        for charge in month_charges:
+            if charge.value > 0:
+                income += charge.value
+            else:
+                outcome += charge.value
+
+        statistic = {'month': months[month - 1], 'income': income, 'outcome': outcome}
+        statistics.append(statistic)
+    return render(request,
+                  'finance/account_details_view.html',
+                  {'form': form, 'account': account, 'statistics': statistics})
