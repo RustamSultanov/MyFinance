@@ -1,52 +1,43 @@
+from datetime import datetime
+
+from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
+from django.core.validators import RegexValidator
 from django.db import models
-from datetime import date
-# Create your models here.
+
+
+class UserProfile(AbstractUser):
+    phone = models.CharField(max_length=11, unique=True)
+    address = models.CharField(max_length=100, null=True)
 
 
 class Account(models.Model):
-    _total = models.DecimalField(max_digits=15, decimal_places=2)
-    name = models.CharField(max_length=20)
-    @classmethod
-    def create(cls, total):
-        account = cls(_total = round(total, 2))
-        account.save()
-        return account
+    number = models.CharField(primary_key=True, max_length=12, verbose_name="Account number", validators=[
+        RegexValidator(
+            r'^\d+$',
+            message="Account number must contains only digits"
+        ),
+        RegexValidator(
+            r'^[1-9]{1}\d{11}$',
+            message="Account number must have precisely 12 digits and can not start with 0"
+        )
+    ])
+    user = models.ForeignKey(UserProfile, related_name='accounts')
 
-    def add_charge(self, charge):
-        if self._total + charge.value < 0:
-            return
+    def __str__(self):
+        return str(self.number)
 
-        charge.account = self
-        charge.save()
-        self._total += charge.value
-        self.save()
-
-    def __iter__(self):
-        return self.charges.all().__iter__()
-
-    @property
-    def total(self):
-        return self._total
+    def get_absolute_url(self):
+        return reverse('finances:account', args=[str(self.number)])
 
 
 class Charge(models.Model):
-    _value = models.DecimalField(max_digits=8, decimal_places=2)
-    _date = models.DateField()
-    account = models.ForeignKey("Account", related_name="charges")
+    value = models.DecimalField(max_digits=8, decimal_places=2)
+    date = models.DateField(default=datetime.today)
+    account = models.ForeignKey(Account)
 
-    @classmethod
-    def create(cls, account, Value=0, Date = date.today()):
-        charge = cls(_value=round(Value, 2), _date = Date, account=account)
-        charge.save()
-        return charge
+    def __str__(self):
+        return "( " + str(self.date) + " )" + " " + str(self.value) + " -> " + str(self.account)
 
-    @property
-    def value(self):
-        return self._value
-
-    @property
-    def date(self):
-        return self._date
-
-
-
+    def get_absolute_url(self):
+        return reverse("finances:account", kwargs={"number": self.account})
