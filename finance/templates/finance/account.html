@@ -1,0 +1,43 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% block header %}
+    <h1>{{ title }}</h1>
+    <div id="left-align" class="row">
+        <a href='{% url 'finances:statistics' number=account_number %}'>
+            <button class="btn btn-primary">
+                <i class="fa fa-bar-chart" aria-hidden="true"></i> Look at your statistics
+            </button>
+        </a>
+        <a href='{% url 'finances:add_charge' number=account_number %}'>
+            <button class="btn btn-primary">
+                <i class="fa fa-pencil fa-fw" aria-hidden="true"></i> Create new charge
+            </button>
+        </a>
+    </div>
+{% endblock %}
+{% block content %}
+    <div>
+        {% if not deposit|length_is:"0" or not withdraw|length_is:"0" %}
+            <table class="left"><caption><h2>Your deposit operations</h2></caption>
+                {% for charge in deposit %}
+                    <tr>
+                        <td>
+                            {{ charge.date }} <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ charge.value }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <table class="right"><caption><h2>Your withdraw operations</h2></caption>
+                {% for charge in withdraw %}
+                    <tr>
+                        <td>
+                            {{ charge.date }} <i class="fa fa-long-arrow-right" aria-hidden="true"></i> {{ charge.value }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h2>There is no charges to display</h2>
+        {% endif %}
+    </div>
+{% endblock %}
