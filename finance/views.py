@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.views import generic
 
-from .calendar import get_month_name
-from .forms import ChargeForm, AccountForm, RegisterForm, LoginForm, ProfileUpdateForm
-from .models import UserProfile
+from finances.calendar import get_month_name
+from finances.forms import ChargeForm, AccountForm, RegisterForm, LoginForm, ProfileUpdateForm
+from finances.models import UserProfile
 
 
 class MainPageView(generic.TemplateView):
