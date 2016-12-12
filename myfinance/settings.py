@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
+import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'finances',
     'session_security',
-    'bootstrap3'
+    'bootstrap3',
+    'rest_framework',
+    'phonenumber_field',
+    'finances'
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -47,7 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
@@ -81,9 +83,12 @@ WSGI_APPLICATION = 'myfinance.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mail_python_8',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': '127.0.0.1',
+        'PORT': '5432'
     }
 }
 
@@ -130,10 +135,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_SECURITY_EXPIRE_AFTER = 180
-SESSION_SECURITY_WARN_AFTER = 120
+SESSION_SECURITY_EXPIRE_AFTER = 1800
+SESSION_SECURITY_WARN_AFTER = 1500
 
 BOOTSTRAP3 = {
     'theme_url': "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css",
     'set_placeholder': False
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=12)
+}
+
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
