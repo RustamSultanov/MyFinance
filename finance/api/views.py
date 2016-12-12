@@ -12,7 +12,7 @@ from .serializers import (
     AccountDetailSerializer, AccountListSerializer, ChargeListSerializer, ChargeDetailSerializer,
     UserListSerializer, UserDetailSerializer,
     StatisticSerializer)
-from ..models import Account, Charge, UserProfile
+from finances.models import Account, Charge, UserProfile
 
 
 class AccountList(ListCreateAPIView):
