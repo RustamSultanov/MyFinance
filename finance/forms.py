@@ -4,7 +4,7 @@ from decimal import Decimal
 from django import forms
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from finances.models import Charge, Account, UserProfile
+from finance.models import Charge, Account, UserProfile
 
 
 class AccountForm(forms.ModelForm):
