@@ -1,7 +1,7 @@
 from rest_framework.fields import DecimalField, IntegerField
 from rest_framework.serializers import ModelSerializer, Serializer
 
-from finances.models import Account, Charge, UserProfile
+from finance.models import Account, Charge, UserProfile
 
 
 class AccountListSerializer(ModelSerializer):
