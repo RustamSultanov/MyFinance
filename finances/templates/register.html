@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% block header %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+{% block content %}
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+        {% bootstrap_messages %}
+        <form method="post" action='{% url "finances:register" %}'>
+            <legend>Enter your registration data here</legend>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% bootstrap_button "Confirm" button_type="submit" button_class="btn-success" %}
+        </form>
+    </div>
+{% endblock %}

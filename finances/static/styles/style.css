@@ -1,0 +1,46 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    width: 50%;
+}
+
+td:hover {
+    background-color: #f5f5f5;
+}
+
+.left {
+    float: left;
+    width: 50%;
+}
+
+.right {
+    float: right;
+    width: 50%;
+}
+
+#stats_table_div {
+    margin-top: 20px;
+}
+
+
+#toEnlarge {
+    width: 1200px;
+}
+
+.accountlist {
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.alink {
+    text-decoration: underline;
+}
+
+ul.dropdown-menu {
+    min-width: 315px;
+}

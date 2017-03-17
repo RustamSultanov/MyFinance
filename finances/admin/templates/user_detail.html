@@ -1,0 +1,60 @@
+{% extends "template_admin.html" %}
+{% load bootstrap3 %}
+{% block header %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+    <div class="col-lg-6 col-md-6">
+        <h4>Username: <b>{{ user.username }}</b></h4>
+        {% if user.first_name == '' %}
+            <h4><i>First Name: This user don't provide his first name.</i></h4>
+        {% else %}
+            <h4>First Name: <b>{{ user.first_name }}</b></h4>
+        {% endif %}
+        {% if user.last_name == '' %}
+            <h4><i>Last Name: This user don't provide his last name.</i></h4>
+        {% else %}
+            <h4>Last Name: <b>{{ user.last_name }}</b></h4>
+        {% endif %}
+        <h4>Email: <b>{{ user.email }}</b></h4>
+        <h4>Telephone: <b>{{ user.phone }}</b></h4>
+        {% if user.address == None %}
+            <h4><i>Address: This user don't provide his address.</i></h4>
+        {% else %}
+            <h4>Address: <b>{{ user.address }}</b></h4>
+        {% endif %}
+    </div>
+        <div class="col-lg-6 col-md-6">
+            {% ifnotequal accounts|length 0 %}
+                <h3>User account list</h3>
+            <table class="table">
+            <tr>
+                <th>
+                    Number
+                </th>
+                <th>
+                    Total sum
+                </th>
+            </tr>
+                {% for acc in accounts %}
+                    <tr>
+                        <td>
+                            {{ acc.number }}
+                        </td>
+                        <td>
+                            {% if acc.total != None %}
+                            {{ acc.total }}
+                            {% else %}
+                                <p>This account has no charges yet.</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+                <h3>This user has no accounts yet</h3>
+            {% endifnotequal %}
+        </div>
+    </div>
+{% endblock %}

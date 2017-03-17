@@ -1,0 +1,127 @@
+{% load bootstrap3 %}
+{% load static %}
+{% load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    {% bootstrap_javascript jquery=1 %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js"></script>
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="{% static 'scripts/updateProfile.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/dateRangePicker.js' %}"></script>
+    {{ form.media }}
+</head>
+<body>
+    {% include 'session_security/all.html' %}
+    <nav role="navigation" class="navbar navbar-default">
+        <div class="navbar-header">
+            <a href="{% url "finances:main" %}" class="navbar-brand">Finance system</a>
+        </div>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="{% url "finances:main" %}">
+                        <i class="fa fa-home" aria-hidden="true"></i> Main page
+                    </a>
+                </li>
+                {% if request.user.is_authenticated and not request.user.is_staff %}
+
+                    <li>
+                        <a href='{% url "finances:profile" %}'>
+                            <i class="fa fa-user-circle-o" aria-hidden="true"></i> Profile
+                        </a>
+                    </li>
+
+                    {% show_accounts request %}
+
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if not request.user.is_authenticated %}
+                    <li><a href="{% url "finances:login" %}">Log In</a></li>
+                    <li><a href="{% url "finances:register" %}">Register</a></li>
+                {% else %}
+                    <form class="navbar-form navbar-left" method="get" action="{% url "finances:user_search" %}">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="username" placeholder="Search user">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                    <li><a href="{% url "finances:logout" %}">Log Out</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="container-fluid">
+            {% block header %}
+            {% endblock %}
+        </div>
+        <div class="container-fluid">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+    <div id="deleteAccount" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to delete this account?</p>
+                    <form id="deleteForm" method="POST" action="{% url "finances:delete" %}">
+                        <input id="id_number" name="number" type="hidden" required="" value="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" id="sendDelete" title="">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editAccount" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Change your account number if you want:</p>
+                    <form id="editForm" method="POST" action="{% url "finances:edit" %}">
+                        <input id="id_path" name="path" type="hidden" required="" value="">
+                        <input id="id_number" name="number" type="hidden" required="" value="">
+                        <div class="form-group">
+                            <label for="id_input">New account number</label>
+                            <input class="form-control" id="id_input" name="input" type="text" required="" value="">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="sendEdit" title="">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar-fixed-bottom row-fluid">
+        <div class="navbar-inner">
+            <div class="container">
+                <p class="pull-right"><a href="#">Back to top</a></p>
+                <p>© 2016 Finance System, Inc. ·</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
