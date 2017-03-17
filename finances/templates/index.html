@@ -1,0 +1,30 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Finance System</h1>
+        <p>This finance system allows you to enjoy simple account managing!
+            Keep all your incomes and outcomes at one place.</p>
+        <p><a class="btn btn-primary btn-lg" href="{% url "finances:register" %}" role="button">Register</a></p>
+    </div>
+    <div class="container marketing">
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Managing charges</h2>
+                <p>You can add or delete charges, depending on which account they belong to.
+                    This allows you to control your charges of a lot of accounts simply.</p>
+            </div>
+            <div class="col-lg-4">
+                <h2>Account statistics</h2>
+                <p>You can control your account condition by looking through statistic page, that allows you to access the information restricted by date.</p>
+            </div>
+            <div class="col-lg-4">
+                <h2>Find other users</h2>
+                <p>You can find a public information of other users, who use our finance system. Simply use the search form and get user's email or phone.</p>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

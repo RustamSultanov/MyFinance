@@ -1,0 +1,24 @@
+{% extends "template_admin.html" %}
+{% load bootstrap3 %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Finance System Administration</h1>
+        <p>This is an administration part of the site. Be happy that you succeeded accessing it. However, do not forget you are responsible for all your actions here.</p>
+        <p><a class="btn btn-primary btn-lg" href="{% url "finances:register" %}" role="button">Register</a></p>
+    </div>
+    <div class="container marketing">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Managing users</h2>
+                <p>You can edit or delete users and their data. Also you can look through accounts they possess.</p>
+            </div>
+            <div class="col-lg-6">
+                <h2>Account data</h2>
+                <p>You can look at account data of every user. You can find information about temporal account numbers and total sum of the account.</p>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

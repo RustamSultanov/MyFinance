@@ -1,0 +1,44 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% block header %}
+    {% if request.user.first_name != "" and request.user.last_name != "" %}
+        <h3>Hello, {{ request.user.first_name }} {{ request.user.last_name }}! Welcome to your profile page.</h3>
+    {% else %}
+        <h3>Hello, {{ request.user.username }}! Welcome to your profile page.</h3>
+    {% endif %}
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">{% bootstrap_messages %}</div>
+{% endblock %}
+{% block content %}
+
+    <div id="personal" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <a id="update">
+            <button class="btn btn-success">
+               Edit personal data
+            </button>
+        </a>
+        <h4>Your username: <b id="username">{{ request.user.username }}</b></h4>
+        <h4>Your email: <b id="email">{{ request.user.email }}</b></h4>
+        <h4>Your telephone number: <b id="phone">{{ request.user.phone }}</b></h4>
+        <div id="first_name">
+            <h4>Your first name: <b id="fn">{{ request.user.first_name }}</b>
+            </h4>
+        </div>
+        <div id="last_name">
+            <h4>Your last name: <b id="ln">{{ request.user.last_name }}</b>
+            </h4>
+        </div>
+        <div id="address">
+            <h4>Your address: <b id="ar">{{ request.user.address }}</b>
+            </h4>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+            <form method="post" action='{% url "finances:insert" %}'>
+                <legend>Create new Account</legend>
+                {% bootstrap_form form %}
+                {% bootstrap_button "Submit" button_type="submit" button_class="btn-success" %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "template.html" %}
+{% load bootstrap3 %}
+{% block header %}
+    <script>
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            const header = ['Date', 'Total'];
+            const array = [];
+            var array_all = [];
+            {% for k,v in data %}
+                {% ifequal data|length 1 %}
+                    {% for key, value in v %}
+                        array.push(["{{k}} \n {{ key }}",{{ value }}]);
+                    {% endfor %}
+                {% else %}
+                    {% for key, value in v %}
+                        var annual = 0;
+                        annual = annual + {{ value }};
+                    {% endfor %}
+                        array.push(["{{k}}", annual]);
+                {% endifequal %}
+            {% endfor %}
+            if (array.length != 0) {
+                array.reverse();
+                for (var i = 0; i < array.length; i++) {
+                    if (i > 0) array[i][1] = array[i][1] + array[i - 1][1];
+                }
+                console.log(array);
+                array_all.push(header);
+                array_all = array_all.concat(array);
+                const data = google.visualization.arrayToDataTable(array_all);
+                const options = {
+                    'title': 'Your statistic visualization',
+                    'legend': {position: 'top', maxLines: 2},
+                    'width': 1000,
+                    'height': 500,
+                    'curveType': 'function',
+                    'colors': ['green']
+                };
+                const chart = new google.visualization.LineChart(document.getElementById('graphChart'));
+                chart.draw(data, options);
+            } else {
+                $("#graphChart").append("<h2>There is no data yet to display!</h2>");
+            }
+        }
+    </script>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div class="row">
+            <h1>{{ title }}</h1>
+            <a href="{% url 'finances:account' number=account_number %}">
+                <button class="btn btn-primary">
+                    <i class="fa fa-angle-double-left" aria-hidden="true"></i> Return to the account page
+                </button>
+            </a>
+        </div>
+        {% if date_to is not None and date_from is not None %}
+            <div class="row" style="padding-top: 10px">
+                <a href="{% url 'finances:statistics' number=account_number %}">
+                    <button class="btn btn-primary">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i> Return to the total statistics page
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <form action='{% url "finances:statistics" number=account_number %}' method="post"
+              class="form-horizontal" role="form">
+            <div class="form-group">
+                <legend>Display statistic of charges completed only in this of days</legend>
+            </div>
+            <div class="form-group">
+                <label for="date_range_picker" class="col-sm-4 control-label">Choose dates:</label>
+                {% for field in form %}
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <button type="submit" class="btn btn-success">Update statistic</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <a id="graphShow">
+                <button class="btn btn-info">
+                    <i class="fa fa-line-chart" aria-hidden="true"></i> Look at the visualisation
+                </button>
+            </a>
+            {% if date_to is not None and date_from is not None %}
+                <a href="{% url 'finances:report' number=account_number %}?date_from={{ date_from }}&date_to={{ date_to }}">
+                    <button class="btn btn-info">
+                        <i class="fa fa-download" aria-hidden="true"></i> Download report
+                    </button>
+                </a>
+            {% else %}
+                <a href="{% url 'finances:report' number=account_number %}">
+                    <button class="btn btn-info">
+                        <i class="fa fa-download" aria-hidden="true"></i> Download report
+                    </button>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div id="stats_table_div">
+        {% ifnotequal data|length 0 %}
+            <table class="container">
+                {% if date_to is not None and date_from is not None %}
+                    <legend>Account {{ account_number }} statistics from {{ date_from }} to {{ date_to }}.</legend>
+                {% else %}
+                    <legend>Account {{ account_number }} statistics for all days.</legend>
+                {% endif %}
+                {% for k,v in data %}
+                <tr>
+                    <th>{{ k }}</th>
+                </tr>
+                {% for key, value in v %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </table>
+        {% else %}
+            {% if date_to is not None and date_from is not None %}
+                <h2>You don't have any charge from {{ date_from }} to {{ date_to }}.</h2>
+            {% else %}
+                <h2>You don't have any charge so we can't show statistics.</h2>
+            {% endif %}
+        {% endifnotequal %}
+    </div>
+    <div id="graphView" class="modal fade">
+    <div class="modal-dialog" id="toEnlarge">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Statistics</h4>
+            </div>
+            <div class="modal-body" id="graphChart" style="width: 900px; height: 500px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
